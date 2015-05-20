@@ -1,4 +1,5 @@
-%%  Serial Port Reader
+function [frame] = serial_get_frame()
+%  Serial Port Reader
 %   Uses the serial toolbox to grab data from the serial port
 %   and simply plots the values
 
@@ -18,3 +19,4 @@ end
 
 % close the serial port!
 fclose(s1);
+end
