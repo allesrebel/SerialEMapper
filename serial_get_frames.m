@@ -38,15 +38,33 @@ disp(samples);
 s = serial(port);      %define serial port
 s.BaudRate=9600;       %define baud rate
 
+%open serial port
+fopen(s);
+
+done = false;
+
+while(~done)
+    data=fscanf(s);    %read from port
+    [ch, val] = parseData(data);
+    
+    if ch == 0
+        frames = [frames val];
+        do(ch ~= 0)
+           data=fscanf(s);    %read from port
+           [ch, val] = parseData(data);
+           frames = [frames val];
+        while(ch ~= 0)
+    end
 end
-% %open serial port
-% fopen(s);
 % 
-% while(1)
-%     data=fscanf(s);    %read from port
-%     
-%     disp(data);
-% end
-% 
-% % close the serial port!
-% fclose(s);
+% close the serial port!
+fclose(s);
+
+frames = data;
+end
+
+function [chNum, ADCval] = parseData(data)
+    temp = strsplit(data);
+    chNum = str2num(temp{2});
+    ADCval = str2num(temp{5});
+end
