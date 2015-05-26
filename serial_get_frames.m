@@ -41,26 +41,38 @@ s.BaudRate=9600;       %define baud rate
 %open serial port
 fopen(s);
 
+%   Grab a the frames required
+frames = [];
+for i = 1:samples
+   frames = [ frames; captureFrame() ];
+end
+
+% close the serial port!
+fclose(s);
+
+frames = data;
+end
+
+function frame = captureFrame()
+frame = [];
 done = false;
 
 while(~done)
     data=fscanf(s);    %read from port
     [ch, val] = parseData(data);
-    
+    do_flag = true;
     if ch == 0
-        frames = [frames val];
-        do(ch ~= 0)
+        frame = [frame val];
+        while(ch ~= 0 || do_flag)
            data=fscanf(s);    %read from port
            [ch, val] = parseData(data);
-           frames = [frames val];
-        while(ch ~= 0)
+           frame = [frame val];
+           do_flag = false;
+        end
+        done = true;
     end
 end
-% 
-% close the serial port!
-fclose(s);
 
-frames = data;
 end
 
 function [chNum, ADCval] = parseData(data)
