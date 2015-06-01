@@ -35,36 +35,34 @@ disp(port);
 disp('Number of frames to be sampled is:');
 disp(samples);
 
-s = serial(port);      %define serial port
-s.BaudRate=9600;       %define baud rate
+s_port = serial(port);      %define serial port
+s_port.BaudRate=9600;       %define baud rate
 
 %open serial port
-fopen(s);
+fopen(s_port);
 
 %   Grab a the frames required
 frames = [];
 for i = 1:samples
-   frames = [ frames; captureFrame() ];
+   frames = [ frames; captureFrame(s_port) ];
 end
 
 % close the serial port!
-fclose(s);
-
-frames = data;
+fclose(s_port);
 end
 
-function frame = captureFrame()
+function frame = captureFrame(s_port)
 frame = [];
 done = false;
 
 while(~done)
-    data=fscanf(s);    %read from port
+    data=fscanf(s_port);    %read from port
     [ch, val] = parseData(data);
     do_flag = true;
     if ch == 0
         frame = [frame val];
         while(ch ~= 0 || do_flag)
-           data=fscanf(s);    %read from port
+           data=fscanf(s_port);    %read from port
            [ch, val] = parseData(data);
            frame = [frame val];
            do_flag = false;
