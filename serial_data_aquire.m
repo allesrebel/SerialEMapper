@@ -1,22 +1,31 @@
-function [frame] = serial_get_frame()
-%  Serial Port Reader
-%   Uses the serial toolbox to grab data from the serial port
-%   and simply plots the values
+%%  Useage Example of the System
+%   An example of utilizing the serial_frame function by generating a
+%   lookup table with real data (data will be limited to 7 points)
 
-s1 = serial('COM1');    %define serial port
-s1.BaudRate=9600;       %define baud rate
-     
-%open serial port
-fopen(s1);
+%  Port Serial Data from First Available Port
+%   Depends on Serial Get Frames to grab serial data
+%   Generates a visualization of the frame through
+%   Assumes the Following Electrode Configuration:
+%
+%   Each number is an electode channel
+%
+%               1     2
+%                3   4
+%                  5
+%              6        7
 
-line = [];
+%   Generate Look Up Table
+lut = [ -2 3;   %first electrode
+        2 3;
+        -1 1;
+        1 1;
+        0 0;
+        -4 -1;
+        4 -1;   %last electrode
+        ];
     
-while(1)
-    data=fscanf(s1);    %read from port
-    
-    disp(data);
-end
+% get frame from first available port
+frame = serial_get_frames();
 
-% close the serial port!
-fclose(s1);
-end
+% send to the frame visualizer
+frame_visualizer(frame(1:7), lut);
