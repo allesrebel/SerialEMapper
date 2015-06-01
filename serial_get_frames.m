@@ -64,8 +64,11 @@ while(~done)
         while(ch ~= 0 || do_flag)
            data=fscanf(s_port);    %read from port
            [ch, val] = parseData(data);
-           frame = [frame val];
-           do_flag = false;
+           if(ch == 0)
+               do_flag = false;
+           else
+               frame = [frame val];
+           end
         end
         done = true;
     end
